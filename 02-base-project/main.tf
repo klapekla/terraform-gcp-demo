@@ -27,8 +27,8 @@ resource "google_project" "this" {
 }
 
 resource "google_project_service" "compute" {
-  project = google_project.this.project_id
-  service = "compute.googleapis.com"
+  project                    = google_project.this.project_id
+  service                    = "compute.googleapis.com"
   disable_dependent_services = true
 }
 
@@ -36,7 +36,7 @@ resource "google_compute_network" "this" {
   name                    = "my-vpc"
   project                 = google_project.this.project_id
   auto_create_subnetworks = false
-  depends_on = [ google_project_service.compute, ]
+  depends_on              = [google_project_service.compute, ]
 }
 
 resource "google_compute_subnetwork" "private" {
@@ -54,4 +54,15 @@ resource "google_compute_subnetwork" "public" {
   ip_cidr_range = "192.168.10.0/24"
   region        = var.region
   network       = google_compute_network.this.id
+}
+
+resource "google_compute_firewall" "iap_ingress" {
+  name          = "allow-ingress-from-iap"
+  project       = google_project.this.project_id
+  network       = google_compute_network.this.id
+  source_ranges = ["35.235.240.0/20"]
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
 }
