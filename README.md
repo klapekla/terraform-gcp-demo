@@ -10,7 +10,7 @@ tf_state_bucket=$(terraform output -raw bucket)
 cd 02-base-project
 terraform init \
     -backend-config="bucket=$tf_state_bucket" \
-    -backend-config="prefix=terraform/state"
+    -backend-config="prefix=state-base-project"
 terraform plan
 terraform apply
 ```
