@@ -30,10 +30,11 @@ resource "google_project" "terraform_state" {
 }
 
 resource "google_storage_bucket" "for_tf_state" {
-  name          = "terraform-state-${random_integer.bucket.id}"
-  project       = google_project.terraform_state.project_id
-  location      = var.region
-  force_destroy = true
+  name                        = "terraform-state-${random_integer.bucket.id}"
+  project                     = google_project.terraform_state.project_id
+  location                    = var.region
+  uniform_bucket_level_access = true
+  force_destroy               = true
   versioning {
     enabled = true
   }
