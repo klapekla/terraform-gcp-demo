@@ -21,9 +21,10 @@ resource "random_integer" "project" {
 }
 
 resource "google_project" "this" {
-  name            = var.project
-  project_id      = "${var.project}-${random_integer.project.id}"
-  billing_account = var.billing_account
+  name                = var.project
+  project_id          = "${var.project}-${random_integer.project.id}"
+  billing_account     = var.billing_account
+  auto_create_network = false
 }
 
 resource "google_project_service" "compute" {
