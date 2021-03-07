@@ -78,6 +78,24 @@ resource "google_compute_router_nat" "nat" {
   }
 }
 
+resource "google_compute_firewall" "internal_ingress" {
+  name          = "allow-internal"
+  project       = google_project.this.project_id
+  network       = google_compute_network.this.id
+  source_ranges = ["192.168.10.0/24", "192.168.11.0/24"]
+  allow {
+    protocol = "tcp"
+    ports    = ["0-65535"]
+  }
+  allow {
+    protocol = "udp"
+    ports    = ["0-65535"]
+  }
+  allow {
+    protocol = "icmp"
+  }
+}
+
 resource "google_compute_firewall" "iap_ingress" {
   name          = "allow-ingress-from-iap"
   project       = google_project.this.project_id
