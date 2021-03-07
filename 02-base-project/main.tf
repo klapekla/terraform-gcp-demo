@@ -2,7 +2,7 @@ terraform {
   required_version = "~> 0.14.0"
 
   required_providers {
-    aws = {
+    gcp = {
       source  = "hashicorp/google"
       version = "~> 3.58.0"
     }
