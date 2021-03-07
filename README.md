@@ -14,3 +14,12 @@ terraform init \
 terraform plan
 terraform apply
 ```
+
+```bash
+cd 03-example-app
+terraform init \
+    -backend-config="bucket=$tf_state_bucket" \
+    -backend-config="prefix=example-app-project"
+terraform plan
+terraform apply
+```
