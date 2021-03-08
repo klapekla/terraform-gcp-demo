@@ -106,3 +106,14 @@ resource "google_compute_firewall" "iap_ingress" {
     ports    = ["22"]
   }
 }
+
+resource "google_compute_firewall" "gcp_healthchecks" {
+  name          = "allow-ingress-from-gcp-healthchecks"
+  project       = google_project.this.project_id
+  network       = google_compute_network.this.id
+  source_ranges = ["35.191.0.0/16","130.211.0.0/22"]
+  allow {
+    protocol = "tcp"
+    ports    = ["80"]
+  }
+}
