@@ -39,6 +39,18 @@ resource "google_compute_instance_template" "example_app" {
     EOF
 }
 
+resource "google_compute_health_check" "autohealing" {
+  name                = "autohealing-health-check"
+  check_interval_sec  = 5
+  timeout_sec         = 5
+  healthy_threshold   = 2
+  unhealthy_threshold = 10 # 50 seconds
+
+  http_health_check {
+    port         = "80"
+  }
+}
+
 resource "google_compute_region_instance_group_manager" "example_app" {
   name = "example-app-igm"
 
@@ -47,5 +59,10 @@ resource "google_compute_region_instance_group_manager" "example_app" {
 
   version {
     instance_template = google_compute_instance_template.example_app.id
+  }
+
+  auto_healing_policies {
+    health_check      = google_compute_health_check.autohealing.id
+    initial_delay_sec = 300
   }
 }
