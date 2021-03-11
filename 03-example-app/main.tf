@@ -21,6 +21,21 @@ data "google_compute_image" "ubuntu" {
   project = "ubuntu-os-cloud"
 }
 
+resource "google_service_account" "example_app" {
+  account_id   = "example-app-sa"
+  display_name = "Service Account for the example app."
+}
+
+resource "google_project_iam_member" "example_app_logging" {
+  role   = "roles/logging.logWriter"
+  member = "serviceAccount:${google_service_account.example_app.email}"
+}
+
+resource "google_project_iam_member" "example_app_metrics" {
+  role   = "roles/monitoring.metricWriter"
+  member = "serviceAccount:${google_service_account.example_app.email}"
+}
+
 resource "google_compute_instance_template" "example_app" {
   name         = "example-app-it"
   machine_type = "f1-micro"
@@ -37,6 +52,10 @@ resource "google_compute_instance_template" "example_app" {
     sudo service apache2 restart
     echo '<!doctype html><html><body><h1>Example App</h1></body></html>' | tee /var/www/html/index.html
     EOF
+  service_account {
+    email  = google_service_account.example_app.email
+    scopes = []
+  }
 }
 
 resource "google_compute_health_check" "autohealing" {
@@ -47,7 +66,7 @@ resource "google_compute_health_check" "autohealing" {
   unhealthy_threshold = 10 # 50 seconds
 
   http_health_check {
-    port         = "80"
+    port = "80"
   }
 }
 
