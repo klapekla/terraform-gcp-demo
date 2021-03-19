@@ -115,21 +115,6 @@ resource "google_compute_url_map" "default" {
   name            = "url-map-target-proxy"
   description     = "a description"
   default_service = google_compute_backend_service.default.id
-
-  host_rule {
-    hosts        = ["*"]
-    path_matcher = "allpaths"
-  }
-
-  path_matcher {
-    name            = "allpaths"
-    default_service = google_compute_backend_service.default.id
-
-    path_rule {
-      paths   = ["/*"]
-      service = google_compute_backend_service.default.id
-    }
-  }
 }
 
 resource "google_compute_backend_service" "default" {
