@@ -43,7 +43,7 @@ resource "google_compute_instance_template" "example_app" {
     source_image = data.google_compute_image.ubuntu.self_link
   }
   network_interface {
-    subnetwork = "private-subnet"
+    subnetwork = "my-subnet"
   }
   metadata_startup_script = <<EOF
     #! /bin/bash

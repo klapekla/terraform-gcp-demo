@@ -41,20 +41,12 @@ resource "google_compute_network" "this" {
 }
 
 resource "google_compute_subnetwork" "private" {
-  name                     = "private-subnet"
+  name                     = "my-subnet"
   project                  = google_project.this.project_id
   ip_cidr_range            = "192.168.11.0/24"
   region                   = var.region
   network                  = google_compute_network.this.id
   private_ip_google_access = true
-}
-
-resource "google_compute_subnetwork" "public" {
-  name          = "public-subnet"
-  project       = google_project.this.project_id
-  ip_cidr_range = "192.168.10.0/24"
-  region        = var.region
-  network       = google_compute_network.this.id
 }
 
 resource "google_compute_router" "nat" {
@@ -101,6 +93,7 @@ resource "google_compute_firewall" "iap_ingress" {
   project       = google_project.this.project_id
   network       = google_compute_network.this.id
   source_ranges = ["35.235.240.0/20"]
+  target_tags   = ["ssh-from-iap"]
   allow {
     protocol = "tcp"
     ports    = ["22"]
@@ -111,9 +104,39 @@ resource "google_compute_firewall" "gcp_healthchecks" {
   name          = "allow-ingress-from-gcp-healthchecks"
   project       = google_project.this.project_id
   network       = google_compute_network.this.id
-  source_ranges = ["35.191.0.0/16","130.211.0.0/22"]
+  source_ranges = ["35.191.0.0/16", "130.211.0.0/22"]
   allow {
     protocol = "tcp"
     ports    = ["80"]
+  }
+}
+
+# bastion
+resource "google_service_account" "bastion" {
+  account_id   = "bastion-sa"
+  display_name = "Bastion Service Account"
+  project      = google_project.this.project_id
+}
+
+resource "google_compute_instance" "bastion" {
+  name         = "bastion"
+  project      = google_project.this.project_id
+  machine_type = "f1-micro"
+  zone         = "europe-west3-a"
+  tags         = ["ssh-from-iap"]
+
+  boot_disk {
+    initialize_params {
+      image = "ubuntu-os-cloud/ubuntu-2004-lts"
+    }
+  }
+
+  network_interface {
+    subnetwork = google_compute_subnetwork.private.id
+  }
+
+  service_account {
+    email  = google_service_account.bastion.email
+    scopes = ["cloud-platform"]
   }
 }
