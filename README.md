@@ -1,6 +1,16 @@
 # Terraform GCP Demo
 creating infrastructure with terraform in google cloud
 
+## Overview
+
+What we will build:
+![gcp-diagram](./assets/gcp-aws-demo.svg)
+
+## Prerequisites
+
+- Terraform installed on machine
+- GCP account
+
 ## Usage
 ```bash
 tf_state_bucket=$(terraform output -raw bucket)
