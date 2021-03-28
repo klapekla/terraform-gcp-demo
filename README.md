@@ -4,7 +4,7 @@ creating infrastructure with terraform in google cloud
 ## Overview
 
 What we will build:
-![gcp-diagram](./assets/gcp-aws-demo.svg)
+![gcp-diagram](./assets/terraform-gcp-demo.svg)
 
 ## Prerequisites
 
