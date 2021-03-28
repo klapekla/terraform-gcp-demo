@@ -10,6 +10,7 @@ What we will build:
 
 - Terraform installed on machine
 - GCP account
+- GCP billing account to use
 
 ## Usage
 
