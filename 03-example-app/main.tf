@@ -16,11 +16,6 @@ provider "google" {
   region  = var.region
 }
 
-data "google_compute_image" "ubuntu" {
-  family  = "ubuntu-2004-lts"
-  project = "ubuntu-os-cloud"
-}
-
 resource "google_service_account" "example_app" {
   account_id   = "example-app-sa"
   display_name = "Service Account for the example app."
@@ -40,7 +35,7 @@ resource "google_compute_instance_template" "example_app" {
   name         = "example-app-it"
   machine_type = "f1-micro"
   disk {
-    source_image = data.google_compute_image.ubuntu.self_link
+    source_image = "ubuntu-os-cloud/ubuntu-2004-lts"
   }
   network_interface {
     subnetwork = "my-subnet"

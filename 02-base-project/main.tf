@@ -27,6 +27,12 @@ resource "google_project" "this" {
   auto_create_network = false
 }
 
+resource "google_compute_project_metadata_item" "this" {
+  project  = google_project.this.project_id
+  key   = "enable-oslogin"
+  value = "TRUE"
+}
+
 resource "google_project_service" "compute" {
   project                    = google_project.this.project_id
   service                    = "compute.googleapis.com"
